@@ -1,5 +1,5 @@
 package = "eansi"
-version = "1.1"
+version = "1.1-0"
 source = {
   url = "git://github.com/smi11/eansi-lua",
   tag = "v1.1",
