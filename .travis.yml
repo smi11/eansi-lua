@@ -21,10 +21,10 @@ install:
 
 script:
   - luacheck --no-unused-args *.lua spec/
-  - busted --verbose --coverage
+  - busted --coverage
 
 after_success:
-  - luacov-coveralls --exclude "*.lua" --include eansi.lua
+  - luacov-coveralls -e "*.lua" -i eansi.lua
 
 branches:
   except:
