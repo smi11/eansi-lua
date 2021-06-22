@@ -1,5 +1,4 @@
 language: python
-sudo: false
 
 env:
   - LUA="lua=5.1"
@@ -21,7 +20,7 @@ install:
   - luarocks install luacov-coveralls
 
 script:
-  - luacheck --no-unused-args eansi.lua
+  - luacheck --no-unused-args *.lua spec/
   - busted --verbose --coverage
 
 after_success:
