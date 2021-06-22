@@ -21,7 +21,7 @@ install:
   - luarocks install luacov-coveralls
 
 script:
-  - luacheck --no-unused-args --std max+busted *.lua spec
+  - luacheck --no-unused-args eansi.lua
   - busted --verbose --coverage
 
 after_success:
