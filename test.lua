@@ -1,19 +1,24 @@
+-- luacheck: ignore 213
+-- luacheck: ignore 631
+
 local eansi = require "eansi"
 
 print (eansi._VERSION .. " speed test\n")
 
-function time(name, loops, f)
+local function time(name, loops, f)
   collectgarbage()
   local stime = os.clock()
   eansi.cache = false
   for i = 1, loops do f() end
-  print(string.format("%s %i        calls in %.3f seconds, %.1f KB RAM", name, loops, os.clock()-stime, collectgarbage"count"))
+  print(string.format("%s %i        calls in %.3f seconds, %.1f KB RAM",
+                      name, loops, os.clock()-stime, collectgarbage"count"))
 
   collectgarbage()
-  local stime = os.clock()
+  stime = os.clock()
   eansi.cache = true
   for i = 1, loops do f() end
-  print(string.format("%s %i cached calls in %.3f seconds, %.1f KB RAM", name, loops, os.clock()-stime, collectgarbage"count"))
+  print(string.format("%s %i cached calls in %.3f seconds, %.1f KB RAM",
+                      name, loops, os.clock()-stime, collectgarbage"count"))
 end
 
 -- specify number of repetitions as argument 1

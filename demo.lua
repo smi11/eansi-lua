@@ -10,6 +10,8 @@ $ lua demo.lua nocolor
 
 --]]
 
+-- luacheck: ignore 213
+
 local eansi = require "eansi"
 
 if arg[1] == "color" then eansi.enable = true end
@@ -39,11 +41,6 @@ end
 -- dump one color
 local function d(color)
 	return eansi[color] (" "..color.." ") .. " "  -- assign color by its name
-end
-
--- dump one color with mask
-local function dm(mask,color)
-	return eansi (string.format(mask, color, color)) .. " " -- use color tags from mask
 end
 
 -- dump a list of colors
@@ -137,7 +134,7 @@ outlf(2,eansi.title "Extended colors (256 color mode)")
 
 outlf(2,"color0 .. color15 / on_color0 .. on_color15")
 
-cnt = function(n,m)
+local cnt = function(n,m)
 	if n < 3 then return n
 	elseif n > m - 1 then return n
 	elseif (n < 6) or (n > m - 4) then return "."
