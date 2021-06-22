@@ -1,60 +1,35 @@
 local eansi = require "eansi"
 
-print "speed test"
+print (eansi._VERSION .. " speed test\n")
 
-local tests = {
-  "black",
-  "red",
-  "green",
-  "yellow",
-  "blue on black",
-  "magenta on white",
-  "cyan on red",
-  "white on bright black",
-  "bright black on bright cyan",
-  "bright red on bright white",
-  "bright green on bright yellow",
-  "bold black",
-  "dim red",
-  "underline green",
-  "italic yellow",
-  "font4 bright blue on black",
-  "double underline magenta on white",
-  "slowblink cyan on red",
-  "italic off white on bright black",
-  "dim off bright black on bright cyan",
-  "superscript bright red on bright white",
-  "subscript off italic bright green on bright yellow",
-  "gray1 on #001122",
-  "intense rgb123 on rgb321",
-  "double underline color6 on color7",
-  "intense #101010 on #AABBCC",
-  "frame encircle overline frame off encircle off overline off intense #101010 on #AABBCC"
-}
-
-local loops = 10000
-
-for k = 1, 5 do
-
+function time(name, loops, f)
+  collectgarbage()
   local stime = os.clock()
   eansi.cache = false
+  for i = 1, loops do f() end
+  print(string.format("%s %i        calls in %.3f seconds, %.1f KB RAM", name, loops, os.clock()-stime, collectgarbage"count"))
 
-  for i = 1, loops do
-    for _, item in ipairs(tests) do
-      eansi.toansi(item)
-    end
-  end
-
-  print(string.format("%i        calls in %.3f seconds, %.1f KB RAM", loops*#tests, os.clock()-stime, collectgarbage"count"))
-
+  collectgarbage()
   local stime = os.clock()
   eansi.cache = true
-  
-  for i = 1, loops do
-    for _, item in ipairs(tests) do
-      eansi.toansi(item)
-    end
-  end
-
-  print(string.format("%i cached calls in %.3f seconds, %.1f KB RAM", loops*#tests, os.clock()-stime, collectgarbage"count"))
+  for i = 1, loops do f() end
+  print(string.format("%s %i cached calls in %.3f seconds, %.1f KB RAM", name, loops, os.clock()-stime, collectgarbage"count"))
 end
+
+local loops = tonumber(arg[1]) or 100000
+eansi.enable = true
+
+time("toansi 1 token   ", loops, function() eansi.toansi("bright yellow") end)
+time("toansi 5 tokens  ", loops, function() eansi.toansi("italic bold off underline off #7788AA on grey10") end)
+time("__index 1 token  ", loops, function() eansi.red("Hello world") end)
+time("__index 5 tokens ", loops, function() eansi.bold.underline.italic.blue.on_rgb111("Hello world") end)
+time("__call 1 token   ", loops, function() eansi ("${red}red green blue") end)
+time("__call 5 tokens  ", loops, function() eansi ("${bold red}red ${green}green ${blue on white}blue") end)
+time("paint 1 token    ", loops, function() eansi.paint ("${red}red green blue") end)
+time("paint 5 tokens   ", loops, function() eansi.paint ("${bold red}red ${green}green ${blue on white}blue") end)
+time("rawpaint 1 token ", loops, function() eansi.rawpaint ("${red}red green blue") end)
+time("rawpaint 5 tokens", loops, function() eansi.rawpaint ("${bold red}red ${green}green ${blue on white}blue") end)
+time("nopaint 1 token  ", loops, function() eansi.nopaint ("${red}red green blue") end)
+time("nopaint 5 tokens ", loops, function() eansi.nopaint ("${bold red}red ${green}green ${blue on white}blue") end)
+time("palette 1 token  ", loops, function() eansi.palette("mycolor","bright yellow") end)
+time("palette 5 tokens ", loops, function() eansi.palette("mycolor","italic bold off underline off #7788AA on grey10") end)
