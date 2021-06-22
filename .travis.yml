@@ -24,7 +24,7 @@ script:
   - busted --verbose --coverage
 
 after_success:
-  - luacov-coveralls --exclude *.lua --include eansi.lua   # --exclude $TRAVIS_BUILD_DIR/lua_install
+  - luacov-coveralls --exclude "*.lua" --include eansi.lua
 
 branches:
   except:
