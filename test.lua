@@ -16,6 +16,7 @@ function time(name, loops, f)
   print(string.format("%s %i cached calls in %.3f seconds, %.1f KB RAM", name, loops, os.clock()-stime, collectgarbage"count"))
 end
 
+-- specify number of repetitions as argument 1
 local loops = tonumber(arg[1]) or 100000
 eansi.enable = true
 
