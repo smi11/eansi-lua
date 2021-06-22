@@ -83,7 +83,7 @@ local sgr = {
   reset = 0, normal = 0,
   bold = 1, intense = 1,            bold_off = 22, intense_off = 22,
   faint = 2, dim = 2,               faint_off = 22, dim_off = 22,
-  italic = 3, oblique = 3,          italic_off = 23, oblique_off = 23, 
+  italic = 3, oblique = 3,          italic_off = 23, oblique_off = 23,
   underline = 4,                    underline_off = 24,
   blink = 5, slowblink = 5,         blink_off = 25, slowblink_off = 25,
   rapidblink = 6,                   rapidblink_off = 25,
