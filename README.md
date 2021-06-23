@@ -1,6 +1,6 @@
 # eansi 1.1 Easy ANSI Color Maker
 
-[![License](https://img.shields.io/:license-mit-blue.svg)](https://mit-license.org) [![Build Status](https://travis-ci.com/smi11/eansi-lua.svg?branch=main)](https://travis-ci.com/smi11/eansi-lua)
+[![License](https://img.shields.io/:license-mit-blue.svg)](https://mit-license.org) [![Build Status](https://travis-ci.com/smi11/eansi-lua.svg?branch=main)](https://travis-ci.com/smi11/eansi-lua) [![Coverage Status](https://coveralls.io/repos/github/smi11/eansi-lua/badge.svg?branch=main)](https://coveralls.io/github/smi11/eansi-lua?branch=main)
 
 Easy, customizable and flexible way to colorize your terminal output. Convert
 strings describing ANSI colors to extended ANSI escape sequences. Support for
