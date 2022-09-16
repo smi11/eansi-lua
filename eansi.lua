@@ -34,7 +34,8 @@
  HISTORY
 
  1.2 < active
-      - replaced parameter str for rawpaint, paint, nopaint and __call method for ...
+      - replaced argument for rawpaint, paint, nopaint and __call method to be ... vararg
+      - minor code improvements
 
  1.1
       - renamed from colors to eansi
@@ -65,6 +66,7 @@
 
 local fmt = string.format
 local concat = table.concat
+local select = select
 local tostring, tonumber = tostring, tonumber
 local _G = _G
 
@@ -274,8 +276,9 @@ function toansi(color)
 end
 
 -- convert color tags and html tags in str to ansi escapes
-function rawpaint(...)
-  local str = concat({...}):gsub(_colortag, function(s) return toansi(s:sub(3,-2)) end)
+function rawpaint(str, ...)
+  str = select("#", ...) == 0 and tostring(str) or concat({str, ...})
+  str = str:gsub(_colortag, function(s) return toansi(s:sub(3,-2)) end)
   return htmltags
     and (str:gsub("%b<>", function(s)
                             return not enable and html[s:sub(2,-2)] and ""
@@ -292,8 +295,9 @@ function paint(...)
 end
 
 -- remove color tags, html tags and ansi escapes from str
-function nopaint(...)
-  local str = concat({...}):gsub(_colortag, ""):gsub("\27%[[%d:;]*m", "")
+function nopaint(str,...)
+  str = select("#", ...) == 0 and tostring(str) or concat({str, ...})
+  str = str:gsub(_colortag, ""):gsub("\27%[[%d:;]*m", "")
   return htmltags
     and (str:gsub("%b<>", function(s) return html[s:sub(2,-2)] and "" or s end))
      or  str
@@ -346,11 +350,10 @@ return _G.setmetatable(M, { __call = function (_, ...) return paint(...) end,
                               -- or else check for chain of color keys
                               local mt = {
                                 __call = function(_, ...)
-                                  local str = rawpaint(...)
-                                  local reset = toansi(_resetcmd)
-                                  return str == ""
-                                     and reset
-                                      or reset.. toansi(key)..str..reset
+                                  local str = concat({...})
+                                  return str ~= ""
+                                     and paint(toansi(key), str)
+                                      or toansi(_resetcmd)
                                 end}
                               mt.__index = function(_, subkey)
                                 key = key.." "..subkey -- build chain of keys

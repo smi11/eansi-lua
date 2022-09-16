@@ -528,8 +528,9 @@ Improvements, suggestions and fixes are welcome.
 
 ### 1.2
 
-- replaced parameter str for rawpaint, paint, nopaint and __call method for ...
- 
+- replaced argument for rawpaint, paint, nopaint and __call method to be ... vararg
+- minor code improvements
+
 ### 1.1
 
 - renamed from colors to eansi
