@@ -1,4 +1,4 @@
-# eansi 1.1 Easy ANSI Color Maker
+# eansi 1.2 Easy ANSI Color Maker
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://mit-license.org) [![Build Status](https://travis-ci.com/smi11/eansi-lua.svg?branch=main)](https://travis-ci.com/smi11/eansi-lua) [![Coverage Status](https://coveralls.io/repos/github/smi11/eansi-lua/badge.svg?branch=main)](https://coveralls.io/github/smi11/eansi-lua?branch=main)
 
@@ -86,10 +86,10 @@ Not really a setting, but a storage for custom palette entries. It is not meant 
 |          Functions           |                       Description                       |
 |------------------------------|---------------------------------------------------------|
 | `eansi.toansi(string)`       | Convert string describing color to ANSI escape sequence |
-| `eansi.palette(name, color)` | Set or clear custom palette entry                     |
-| `eansi.rawpaint(string)`     | Convert color and HTML tags to ANSI escape sequences    |
-| `eansi.paint(string)`        | Same as rawpaint() but guards for color leaks           |
-| `eansi.nopaint(string)`      | Removes both color and HTML tags and any ANSI escapes   |
+| `eansi.palette(name, color)` | Set or clear custom palette entry                       |
+| `eansi.rawpaint(...)`        | Convert color and HTML tags to ANSI escape sequences    |
+| `eansi.paint(...)`           | Same as rawpaint() but guards for color leaks           |
+| `eansi.nopaint(...)`         | Removes both color and HTML tags and any ANSI escapes   |
 | `eansi.register(table)`      | Copy eansi functions to table                           |
 
 #### Function `eansi.toansi(string)`
@@ -200,9 +200,9 @@ esc = eansi.toansi "alert" -- Error: Invalid token 'alert' in color 'alert'
 
 Defining new palette entries is best done during initialization phase of your program as efficiency of this function drops when dealing with many thousands of palette entries.
 
-#### Function `eansi.rawpaint(string)`
+#### Function `eansi.rawpaint(...)`
 
-`eansi.rawpaint` replaces color tags and HTML tags in string with ANSI escape codes. Color tags are just strings describing colors and attributes (see function `eansi.toansi`) starting with `$` sign and enclosed in curly braces, e.g.: `${bold red}`. If you wish to customize characters used for color tags see setting `eansi._colortag` above.
+`eansi.rawpaint` replaces color tags and HTML tags in list of strings with ANSI escape codes. Color tags are just strings describing colors and attributes (see function `eansi.toansi`) starting with `$` sign and enclosed in curly braces, e.g.: `${bold red}`. If you wish to customize characters used for color tags see setting `eansi._colortag` above.
 
 Note that when inserting colors to your output using `eansi.rawpaint`, you must take care of closing colors and attrubutes by inserting ANSI reset at the end of your string/output.
 
@@ -222,7 +222,7 @@ eansi.htmltags = true -- by default HTML tags are disabled, so we need to enable
 print(eansi.rawpaint"${blue}<b>bold</b>, <i>italic</i>, <u>underline</u> and <sup>superscript</sup> and <sub>subscript</sub>${default}")
 ```
 
-#### Function `eansi.paint(string)`
+#### Function `eansi.paint(...)`
 
 `eansi.paint` is identical to `eansi.rawpaint` except that it guards for colors leaks by inserting ANSI reset before and after our string. So our example from above could be simplified.
 
@@ -270,7 +270,7 @@ print(eansi["#CCAA22 on grey11"] "and even set true 24-bit color") -- using #
 
 This way we can still add color tags and HTML tags to insert additional colors into our output.
 
-#### Function `eansi.nopaint(string)`
+#### Function `eansi.nopaint(...)`
 
 `eansi.nopaint` strips color tags, HTML tags (only when `eansi.htmltags == true`) and any ANSI escapes from string. This can be useful if we need to count length of our output or simply remove any color information.
 
@@ -526,6 +526,10 @@ Improvements, suggestions and fixes are welcome.
 
 ## Changelog
 
+### 1.2
+
+- replaced parameter str for rawpaint, paint, nopaint and __call method for ...
+ 
 ### 1.1
 
 - renamed from colors to eansi

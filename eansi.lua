@@ -1,6 +1,6 @@
 --[[
 
- eansi 1.1 Easy ANSI Color Maker
+ eansi 1.2 Easy ANSI Color Maker
  no warranty implied; use at your own risk
 
  Easy, customizable and flexible way to colorize your terminal output. Convert
@@ -33,7 +33,10 @@
 
  HISTORY
 
- 1.1 < active
+ 1.2 < active
+      - replaced parameter str for rawpaint, paint, nopaint and __call method for ...
+
+ 1.1
       - renamed from colors to eansi
       - changed monkey patch for _G.strings so it is now optional
       - added settings for caching, color tags, HTML tags
@@ -65,7 +68,7 @@ local concat = table.concat
 local tostring, tonumber = tostring, tonumber
 local _G = _G
 
-local M = { _VERSION = "eansi 1.1" }
+local M = { _VERSION = "eansi 1.2" }
 
 local defaults = {
   enable = package.config:sub(1,1) == "/",  -- disabled on windows, enabled other OS's
@@ -271,8 +274,8 @@ function toansi(color)
 end
 
 -- convert color tags and html tags in str to ansi escapes
-function rawpaint(str)
-  str = tostring(str or ""):gsub(_colortag, function(s) return toansi(s:sub(3,-2)) end)
+function rawpaint(...)
+  local str = concat({...}):gsub(_colortag, function(s) return toansi(s:sub(3,-2)) end)
   return htmltags
     and (str:gsub("%b<>", function(s)
                             return not enable and html[s:sub(2,-2)] and ""
@@ -282,15 +285,15 @@ function rawpaint(str)
 end
 
 -- add leading and trailing ansi reset to rawpaint(str)
-function paint(str)
-  str = rawpaint(str)
+function paint(...)
+  local str = rawpaint(...)
   local reset = toansi(_resetcmd)
   return str == "" and reset or reset .. str .. reset
 end
 
 -- remove color tags, html tags and ansi escapes from str
-function nopaint(str)
-  str = tostring(str or ""):gsub(_colortag, ""):gsub("\27%[[%d:;]*m", "")
+function nopaint(...)
+  local str = concat({...}):gsub(_colortag, ""):gsub("\27%[[%d:;]*m", "")
   return htmltags
     and (str:gsub("%b<>", function(s) return html[s:sub(2,-2)] and "" or s end))
      or  str
@@ -331,7 +334,7 @@ end
 
 -- make __call call paint()
 -- make __index restore defaults & chain color out of subkeys
-return _G.setmetatable(M, { __call = function (_, s) return paint(s) end,
+return _G.setmetatable(M, { __call = function (_, ...) return paint(...) end,
                             __index = function (t, key)
                               -- restore defaults if needed
                               local v = defaults[key]
@@ -342,8 +345,8 @@ return _G.setmetatable(M, { __call = function (_, s) return paint(s) end,
                               end
                               -- or else check for chain of color keys
                               local mt = {
-                                __call = function(_, str)
-                                  str = rawpaint(str)
+                                __call = function(_, ...)
+                                  local str = rawpaint(...)
                                   local reset = toansi(_resetcmd)
                                   return str == ""
                                      and reset

@@ -210,6 +210,7 @@ describe("rawpaint()", function()
     eansi.enable = true
     assert.equal("This is string without color tags", eansi.rawpaint "This is string without color tags")
     assert.equal("This is <span>string</span> without color tags", eansi.rawpaint "This is <span>string</span> without color tags")
+    assert.equal("hello world", eansi.rawpaint("hello"," ","world"))
     assert.equal("", eansi.rawpaint "")
   end)
 
@@ -239,6 +240,7 @@ describe("rawpaint()", function()
     assert.equal("something \27[1mbold\27[0m is also \27[1mstrong\27[0m", eansi.rawpaint "something ${bold}bold${reset} is also ${bold}strong${reset}")
     assert.equal("no color tags", eansi.rawpaint "no color tags")
     assert.equal("", eansi.rawpaint "")
+    assert.equal("\27[31mword \27[32mword", eansi.rawpaint("${red}word", " ", "${green}word"))
   end)
 
   it("should replace all tags with ansi escapes", function()
@@ -281,6 +283,7 @@ describe("nopaint()", function()
     assert.equal("This is <b>string</b> without <c>color</c> tags", eansi.nopaint "This is <b>string</b> without <c>color</c> tags")
     assert.equal("This is string without <b>color</b> tags", eansi.nopaint "\27[1mThis is ${red}string ${green}without <b>color</b> tags\27[0m")
     assert.equal("", eansi.rawpaint "")
+    assert.equal("hellostring", eansi.nopaint("hello", "${red}", "string"))
 
     eansi.enable = false
     assert.equal("This is string without color tags", eansi.nopaint "This is ${red}string ${green}without color tags")
@@ -303,7 +306,6 @@ describe("nopaint()", function()
     assert.equal("This is string without color tags", eansi.nopaint "\27[1mThis is ${red}string ${green}without <b>color</b> tags\27[0m")
     assert.equal("", eansi.rawpaint "")
   end)
-
 end)
 
 -------------------------------------------------------------------------
@@ -314,8 +316,10 @@ describe("__call and __index metamethods", function()
     eansi.htmltags = true
     local reset = eansi ""
     assert.equal(reset.."\27[31mhello"..reset, eansi.red "hello")
+    assert.equal(reset.."\27[31mhello world"..reset, eansi.red("hello", " ", "world"))
     assert.equal(reset.."\27[31mhello \27[34mblue \27[1mworld"..reset, eansi.red "hello ${blue}blue <b>world")
     assert.equal(reset.."\27[31;7mhello \27[34mblue \27[1mworld"..reset, eansi.red.inverse "hello ${blue}blue <b>world")
+    assert.equal(reset.."\27[31;7mhello \27[34mblue \27[1mworld"..reset, eansi.red.inverse ("hello ", "${blue}blue", " <b>world"))
 
     eansi.htmltags = false
     assert.equal(reset.."\27[31mhello"..reset, eansi.red "hello")
@@ -332,7 +336,6 @@ describe("__call and __index metamethods", function()
     assert.equal("hello blue <b>world", eansi.red "hello ${blue}blue <b>world")
     assert.equal("hello blue <b>world", eansi.red.inverse "hello ${blue}blue <b>world")
   end)
-
 end)
 
 -------------------------------------------------------------------------
@@ -372,7 +375,6 @@ describe("custom tag regex", function()
     assert.equal("hello world", eansi.nopaint "hello :{bold}world")
     eansi._colortag = nil
   end)
-
 end)
 
 -------------------------------------------------------------------------
