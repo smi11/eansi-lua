@@ -277,7 +277,7 @@ end
 
 -- convert color tags and html tags in str to ansi escapes
 function rawpaint(str, ...)
-  str = select("#", ...) == 0 and tostring(str) or concat({str, ...})
+  str = select("#", ...) == 0 and ""..str or concat({str, ...})
   str = str:gsub(_colortag, function(s) return toansi(s:sub(3,-2)) end)
   return htmltags
     and (str:gsub("%b<>", function(s)
@@ -296,7 +296,7 @@ end
 
 -- remove color tags, html tags and ansi escapes from str
 function nopaint(str,...)
-  str = select("#", ...) == 0 and tostring(str) or concat({str, ...})
+  str = select("#", ...) == 0 and ""..str or concat({str, ...})
   str = str:gsub(_colortag, ""):gsub("\27%[[%d:;]*m", "")
   return htmltags
     and (str:gsub("%b<>", function(s) return html[s:sub(2,-2)] and "" or s end))
@@ -350,7 +350,7 @@ return _G.setmetatable(M, { __call = function (_, ...) return paint(...) end,
                               -- or else check for chain of color keys
                               local mt = {
                                 __call = function(_, str, ...)
-                                  str = select("#", ...) == 0 and tostring(str) or concat({str, ...})
+                                  str = select("#", ...) == 0 and ""..str or concat({str, ...})
                                   return str ~= ""
                                      and paint(toansi(key) .. str)
                                       or toansi(_resetcmd)
