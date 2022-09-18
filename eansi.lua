@@ -349,10 +349,10 @@ return _G.setmetatable(M, { __call = function (_, ...) return paint(...) end,
                               end
                               -- or else check for chain of color keys
                               local mt = {
-                                __call = function(_, ...)
-                                  local str = concat({...})
+                                __call = function(_, str, ...)
+                                  str = select("#", ...) == 0 and tostring(str) or concat({str, ...})
                                   return str ~= ""
-                                     and paint(toansi(key), str)
+                                     and paint(toansi(key) .. str)
                                       or toansi(_resetcmd)
                                 end}
                               mt.__index = function(_, subkey)
